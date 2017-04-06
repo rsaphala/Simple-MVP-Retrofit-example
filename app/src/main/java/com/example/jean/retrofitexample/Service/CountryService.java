@@ -1,7 +1,8 @@
 package com.example.jean.retrofitexample.Service;
 
-import com.example.jean.retrofitexample.Model.RestResponse;
+import com.example.jean.retrofitexample.Model.RestResponses;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -16,7 +17,7 @@ public class CountryService {
 
     public interface  CountryAPI{
         @GET("country/get/all")
-        Call<RestResponse> getResults();
+        Call<RestResponses> getResults();
     }
 
     public CountryAPI getAPI(){

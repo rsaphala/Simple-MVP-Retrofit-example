@@ -1,12 +1,16 @@
 package com.example.jean.retrofitexample.Presenter;
 
 import android.content.Context;
+import android.util.Log;
 
-import com.example.jean.retrofitexample.Model.RestResponse;
+import com.example.jean.retrofitexample.Model.RestResponses;
 import com.example.jean.retrofitexample.Service.CountryService;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,7 +25,7 @@ public class CountryPresenter {
     private final CountryService countryService;
 
     public interface CountryPresenterListener{
-        void countriesReady(List<RestResponse.Country> countries);
+        void countriesReady(RestResponses restResponses);
     }
 
     public CountryPresenter(CountryPresenterListener listener, Context context){
@@ -34,22 +38,18 @@ public class CountryPresenter {
         countryService
                 .getAPI()
                 .getResults()
-                .enqueue(new Callback<RestResponse>() {
+                .enqueue(new Callback<RestResponses>() {
                     @Override
-                    public void onResponse(Call<RestResponse> call, Response<RestResponse> response) {
-                        RestResponse result = response.body();
-
-                        if(result != null)
-                            mListener.countriesReady(result.getResult());
+                    public void onResponse(Call<RestResponses> call, Response<RestResponses> response) {
+                        if (response.isSuccessful()) {
+                            RestResponses restResponses = response.body();
+                            mListener.countriesReady(restResponses);
+                        }
                     }
 
                     @Override
-                    public void onFailure(Call<RestResponse> call, Throwable t) {
-                        try {
-                            throw  new InterruptedException("Erro na comunicação com o servidor!");
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                    public void onFailure(Call<RestResponses> call, Throwable t) {
+
                     }
                 });
     }
